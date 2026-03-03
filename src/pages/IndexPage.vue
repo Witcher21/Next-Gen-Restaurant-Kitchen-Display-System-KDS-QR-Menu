@@ -57,43 +57,6 @@
           <!-- Interactive Login Card -->
           <div class="glass-panel main-interaction-card">
             <transition name="fade-slide" mode="out-in">
-              <div class="view-welcome text-left" key="welcome">
-                <h2 class="card-title">Welcome Guest</h2>
-                <p class="card-subtitle q-mb-md">Choose how to get started.</p>
-
-                <div class="row q-col-gutter-md q-mb-md">
-                  </div>
-                  <div class="col-12 col-sm-6">
-                    <q-input
-                      v-model="recoveryId"
-                      dark
-                      outlined
-                      rounded
-                      dense
-                      placeholder="Session ID (SD-XXXX)"
-                      class="premium-input session-input full-width"
-                      input-class="text-weight-bold text-uppercase text-tracking"
-                      @keyup.enter="recoverSession"
-                      maxlength="7"
-                    >
-                      <template v-slot:append v-if="recoveryId">
-                        <q-btn
-                          flat
-                          round
-                          dense
-                          icon="arrow_forward"
-                          color="orange"
-                          @click="recoverSession"
-                        />
-                      </template>
-                    </q-input>
-                  </div>
-                <p v-if="recoveryError" class="text-red-4 q-mt-sm text-caption">
-                  {{ recoveryError }}
-                </p>
-              </div>
-
-            <transition name="fade-slide" mode="out-in">
               <!-- VIEW 1: Welcome -->
               <div v-if="!showTableSelection" class="view-welcome text-left" key="welcome">
                 <h2 class="card-title">Welcome Guest</h2>

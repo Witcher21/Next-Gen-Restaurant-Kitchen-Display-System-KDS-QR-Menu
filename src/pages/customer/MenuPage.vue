@@ -11,23 +11,44 @@
 
         <!-- Category Pill Bar -->
         <div class="category-scroll-wrapper q-mt-lg">
-          <q-scroll-area class="cat-scroll" :thumb-style="{ display: 'none' }" horizontal>
-            <div class="cat-track">
-              <q-btn
-                v-for="cat in menuStore.categories"
-                :key="cat.id"
-                :class="['cat-pill', { 'cat-pill--active': menuStore.activeCategory === cat.id }]"
-                rounded
-                unelevated
-                no-caps
-                dense
-                @click="menuStore.setCategory(cat.id)"
-              >
-                <span class="cat-icon">{{ cat.icon }}</span>
-                <span class="cat-name">{{ cat.name }}</span>
-              </q-btn>
-            </div>
-          </q-scroll-area>
+          <!-- Left Arrow -->
+          <q-btn
+            v-show="canScrollLeft"
+            flat
+            round
+            dense
+            icon="chevron_left"
+            class="cat-arrow cat-arrow--left"
+            @click="scrollCatsLeft"
+          />
+
+          <!-- Scrollable Track -->
+          <div ref="catTrackRef" class="cat-track" @scroll="updateArrowVisibility">
+            <q-btn
+              v-for="cat in menuStore.categories"
+              :key="cat.id"
+              :class="['cat-pill', { 'cat-pill--active': menuStore.activeCategory === cat.id }]"
+              rounded
+              unelevated
+              no-caps
+              dense
+              @click="menuStore.setCategory(cat.id)"
+            >
+              <span class="cat-icon">{{ cat.icon }}</span>
+              <span class="cat-name">{{ cat.name }}</span>
+            </q-btn>
+          </div>
+
+          <!-- Right Arrow -->
+          <q-btn
+            v-show="canScrollRight"
+            flat
+            round
+            dense
+            icon="chevron_right"
+            class="cat-arrow cat-arrow--right"
+            @click="scrollCatsRight"
+          />
         </div>
       </div>
     </div>
@@ -207,7 +228,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useMenuStore } from 'stores/menu-store'
 import { useCartStore } from 'stores/cart-store'
 import { useQuasar } from 'quasar'
@@ -223,6 +244,32 @@ const detailOpen = ref(false)
 const selectedItem = ref(null)
 const itemNotes = ref('')
 const popularScrollRef = ref(null)
+const catTrackRef = ref(null)
+const canScrollLeft = ref(false)
+const canScrollRight = ref(true)
+
+function updateArrowVisibility() {
+  const el = catTrackRef.value
+  if (!el) return
+  canScrollLeft.value = el.scrollLeft > 4
+  canScrollRight.value = el.scrollLeft < el.scrollWidth - el.clientWidth - 4
+}
+
+function scrollCatsLeft() {
+  const el = catTrackRef.value
+  if (!el) return
+  el.scrollBy({ left: -200, behavior: 'smooth' })
+}
+
+function scrollCatsRight() {
+  const el = catTrackRef.value
+  if (!el) return
+  el.scrollBy({ left: 200, behavior: 'smooth' })
+}
+
+onMounted(() => {
+  nextTick(() => updateArrowVisibility())
+})
 
 // High resolution fixed curated Unsplash foodie images matching categories
 const imageMap = {
@@ -376,19 +423,46 @@ function addToCartWithNotes() {
 /* Categories */
 .category-scroll-wrapper {
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
   margin: 24px auto 0;
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 4px;
 }
-.cat-scroll {
-  height: 60px;
-  width: 100%;
+.cat-arrow {
+  color: rgba(255, 255, 255, 0.85) !important;
+  background: rgba(0, 0, 0, 0.45) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  flex-shrink: 0;
+  z-index: 5;
+  transition: all 0.25s ease;
+  &:hover {
+    background: rgba(234, 88, 12, 0.6) !important;
+    border-color: rgba(234, 88, 12, 0.5);
+    transform: scale(1.08);
+  }
 }
 .cat-track {
   display: flex;
-  gap: 12px;
-  padding: 0 16px;
+  gap: 10px;
+  padding: 4px 8px;
   align-items: center;
-  height: 100%;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  flex: 1;
+  min-width: 0;
+  /* Hide scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 .cat-pill {
   height: 44px;
@@ -397,6 +471,7 @@ function addToCartWithNotes() {
   font-weight: 600;
   font-size: 0.95rem;
   white-space: nowrap;
+  flex-shrink: 0;
   background: rgba(255, 255, 255, 0.06);
   color: #a3a3a3;
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -408,6 +483,11 @@ function addToCartWithNotes() {
     color: #fff;
     box-shadow: 0 8px 20px rgba(234, 88, 12, 0.4);
     border-color: #ea580c;
+  }
+  &:hover:not(.cat-pill--active) {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #e5e5e5;
   }
 }
 

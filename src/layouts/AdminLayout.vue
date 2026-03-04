@@ -84,7 +84,7 @@
                   </q-item-section>
                   <q-item-section>
                     <q-item-label class="notif-title">{{ n.title }}</q-item-label>
-                    <q-item-label class="notif-msg">{{ n.message }}</q-item-label>
+                    <q-item-label class="notif-msg ellipsis-2-lines">{{ n.message }}</q-item-label>
                     <q-item-label class="notif-time">{{ n.time }}</q-item-label>
                   </q-item-section>
                   <q-item-section side>
@@ -114,6 +114,7 @@
               <q-avatar size="36px" class="profile-avatar shadow-glow">
                 <img
                   src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop"
+                  alt="Admin Avatar"
                 />
               </q-avatar>
               <q-icon name="expand_more" size="16px" color="grey-5" class="q-ml-xs" />
@@ -126,6 +127,7 @@
                   <q-avatar size="64px" class="q-mb-sm shadow-soft">
                     <img
                       src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop"
+                      alt="Admin Avatar"
                     />
                   </q-avatar>
                   <div
@@ -263,7 +265,7 @@
     <q-page-container class="page-container-bg">
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
-          <component :is="Component" />
+          <component :is="Component" v-if="Component" />
         </transition>
       </router-view>
     </q-page-container>
@@ -699,7 +701,7 @@ function isActive(item) {
 }
 
 /* Premium Popup Menus (Profile & Notifs) */
-::v-deep(.premium-menu) {
+:deep(.premium-menu) {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
@@ -711,7 +713,6 @@ function isActive(item) {
     inset: 8px;
     background: rgba(20, 20, 20, 0.85);
     backdrop-filter: blur(24px) saturate(200%);
-    -webkit-backdrop-filter: blur(24px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
@@ -772,10 +773,6 @@ function isActive(item) {
   color: #a3a3a3;
   margin-top: 4px;
   line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 .notif-time {
   font-size: 0.65rem;
@@ -833,5 +830,79 @@ function isActive(item) {
 .fade-leave-to {
   opacity: 0;
   transform: translateY(10px);
+}
+</style>
+
+<!-- GLOBAL styles for q-menu portals (rendered outside scoped component tree) -->
+<style lang="scss">
+/* Premium Popup Menus - GLOBAL (q-menu teleports to body) */
+.premium-menu.q-menu {
+  background: rgba(18, 18, 18, 0.95) !important;
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 16px !important;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  color: #e5e5e5;
+
+  /* Entrance animation */
+  animation: menuSlideIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  .menu-glass-bg {
+    display: none; /* No longer needed, the q-menu itself is styled */
+  }
+
+  .q-list {
+    padding: 12px;
+    background: transparent;
+  }
+
+  .q-item {
+    color: #d4d4d4;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+    }
+  }
+
+  .q-item__label--header {
+    color: #a3a3a3;
+  }
+}
+
+/* Notification menu specific */
+.notif-menu.q-menu {
+  min-width: 340px;
+
+  .q-list {
+    padding: 16px;
+  }
+}
+
+/* Profile menu specific */
+.profile-menu.q-menu {
+  min-width: 240px;
+
+  .q-item__section--avatar {
+    min-width: 36px;
+  }
+}
+
+@keyframes menuSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 </style>

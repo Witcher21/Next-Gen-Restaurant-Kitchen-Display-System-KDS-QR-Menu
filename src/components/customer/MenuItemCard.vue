@@ -25,9 +25,9 @@
 
     <q-card-section class="card-body">
       <div class="name-row justify-between items-start no-wrap q-mb-xs">
-        <div class="card-name">{{ item.name }}</div>
+        <div class="card-name ellipsis-2-lines">{{ item.name }}</div>
       </div>
-      <div class="card-desc">{{ item.description }}</div>
+      <div class="card-desc ellipsis-2-lines">{{ item.description }}</div>
 
       <div class="action-row q-mt-md">
         <div class="price-val">Rs. {{ item.price.toLocaleString() }}</div>
@@ -110,7 +110,6 @@ const imageUrl = computed(() => {
   background: rgba(20, 20, 20, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
@@ -224,10 +223,6 @@ const imageUrl = computed(() => {
   font-weight: 700;
   color: #fafaf9;
   line-height: 1.2;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .card-desc {
@@ -235,10 +230,6 @@ const imageUrl = computed(() => {
   color: #a3a3a3;
   margin-top: 6px;
   line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
   flex: 1;
 }
 
